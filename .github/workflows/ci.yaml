@@ -1,0 +1,28 @@
+name: CI
+on: 
+  push:
+    branches: 
+    - docker
+jobs: 
+  docker: 
+    runs-on: ubuntu-18.04
+    steps: 
+    - 
+      name: checkout
+      uses: actions/checkout@v2
+    -
+      name: test
+      run: |
+        set -x
+        docker build -t test --no-cache .
+        docker run -d -p 8080:8080 --name test test 
+        while true
+          do
+            sleep 10
+            docker exec test ps | grep "1.*java -jar spring-petclinic.jar" && break
+          done
+        while true
+          do
+            sleep 10
+            curl localhost:8080 | grep "PetClinic :: a Spring Framework demonstration" && break
+          done
