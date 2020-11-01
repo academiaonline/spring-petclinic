@@ -1,0 +1,62 @@
+################################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
+#      SPDX-License-Identifier:  GPL-2.0-only                                  #
+################################################################################
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: spring-petclinic
+spec:
+  selector:
+    matchLabels:
+      app: spring-petclinic
+  template: 
+    metadata:
+      labels:
+        app: spring-petclinic
+    spec:
+      containers: 
+      -
+        image: academiaonline/spring-petclinic:latest
+        imagePullPolicy: Always
+        name: spring-petclinic
+        ports:
+        -
+          containerPort: 8080
+        resources:
+          limits:
+            cpu: 300m
+            memory: 900Mi
+          requests:
+            cpu: 300m
+            memory: 900Mi          
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: spring-petclinic
+spec:
+  ingress:
+  -
+    ports:
+    -
+      port: 8080
+  podSelector:
+    matchLabels:
+      app: spring-petclinic
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: spring-petclinic
+spec:
+  ports:
+  -
+    nodePort: 30000
+    port: 80
+    targetPort: 8080
+  selector:
+    app: spring-petclinic
+  type: NodePort
+---  
