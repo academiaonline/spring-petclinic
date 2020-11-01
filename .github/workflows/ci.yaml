@@ -53,5 +53,9 @@ jobs:
             sleep 10
             docker service ls
             docker service ls | grep '\([0-9]\)/\1' && break
-            docker stack ps $project
+          done
+        while true
+          do
+            sleep 10
+            curl localhost:8080 | grep "PetClinic :: a Spring Framework demonstration" && break
           done
