@@ -54,9 +54,4 @@ jobs:
             docker service ls
             docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
           done
-        while true
-          do
-            sleep 10
-            curl localhost:8080 -I | grep 200 && break
-          done
         docker service logs spring-petclinic_spring-petclinic -f
