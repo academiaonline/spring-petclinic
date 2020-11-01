@@ -16,7 +16,7 @@ jobs:
         set -x
         find
         docker build -t test --no-cache .
-        docker run -d -p 8080:8080 --name test test 
+        docker run -d -p 8080:8080 --name test --cpus "0.3" -m 900M --memory-reservation 900M test 
         while true
           do
             sleep 10
