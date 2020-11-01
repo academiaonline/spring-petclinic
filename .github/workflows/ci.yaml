@@ -14,6 +14,7 @@ jobs:
       name: test
       run: |
         set -x
+        find
         docker build -t test --no-cache .
         docker run -d -p 8080:8080 --name test test 
         while true
@@ -31,9 +32,11 @@ jobs:
       mode: swarm
     runs-on: ubuntu-18.04
     steps:
-    -
+    - 
+      name: checkout
       uses: actions/checkout@v2
     -
+      name: test
       run: |
         set -x
         branch=$(basename $GITHUB_REF)
@@ -41,7 +44,7 @@ jobs:
         compose=etc/$mode/$project.yaml
         sed -i /image:.*$project/s/latest/$branch/ $compose
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
-        
+        find
         docker swarm init
         sed -i s/worker/manager/ $compose
         docker stack deploy -c $compose $project
