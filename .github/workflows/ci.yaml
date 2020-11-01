@@ -54,4 +54,5 @@ jobs:
             docker service ls
             docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
           done
+        docker stats --no-stream
         docker service logs spring-petclinic_spring-petclinic -f
