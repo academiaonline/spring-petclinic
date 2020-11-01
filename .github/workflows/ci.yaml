@@ -52,10 +52,11 @@ jobs:
           do
             sleep 10
             docker service ls
-            docker service ls | grep '\([0-9]\)/\1' && break
+            docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
           done
+        docker service logs spring-petclinic_spring-petclinic
         while true
           do
             sleep 10
-            curl localhost:8080 | grep "PetClinic :: a Spring Framework demonstration" && break
+            curl localhost:8080 | grep PetClinic && break
           done
