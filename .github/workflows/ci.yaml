@@ -55,4 +55,9 @@ jobs:
             docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
           done
         docker stats --no-stream
-        docker service logs spring-petclinic_spring-petclinic -f
+        while true
+          do
+            sleep 10
+            docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
+          done
+        curl localhost:8080
