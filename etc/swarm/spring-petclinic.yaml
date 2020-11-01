@@ -13,8 +13,8 @@ services:
         - node.role == worker
       resources:
         limits:
-          cpus: "0.3"
-          memory: 900M
+          cpus: "0.5"
+          memory: 1g
     image: academiaonline/spring-petclinic:latest
     networks:
     - frontend
