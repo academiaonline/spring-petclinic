@@ -1,0 +1,19 @@
+################################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
+#      SPDX-License-Identifier:  GPL-2.0-only                                  #
+################################################################################
+networks:
+  frontend:
+    internal: false
+services:
+  spring-petclinic:
+    deploy:
+      placement:
+        constraints:
+        - node.role == worker
+    image: academiaonline/spring-petclinic:latest
+    networks:
+    - frontend
+    ports:
+      - 8080:8080
+version: '3.8'
