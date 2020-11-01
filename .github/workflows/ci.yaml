@@ -26,3 +26,29 @@ jobs:
             sleep 10
             curl localhost:8080 | grep "PetClinic :: a Spring Framework demonstration" && break
           done
+  swarm: 
+    env:
+      mode: swarm
+    runs-on: ubuntu-18.04
+    steps:
+    -
+      uses: actions/checkout@v2
+    -
+      run: |
+        set -x
+        branch=$(basename $GITHUB_REF)
+        project=$(basename $GITHUB_REPOSITORY)
+        compose=etc/$mode/$project.yaml
+        sed -i /image:.*$project/s/latest/$branch/ $compose
+        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
+        
+        docker swarm init
+        sed -i s/worker/manager/ $compose
+        docker stack deploy -c $compose $project
+        while true
+          do
+            sleep 10
+            docker service ls
+            docker service ls | grep '\([0-9]\)/\1' && break
+            docker stack ps $project
+          done
