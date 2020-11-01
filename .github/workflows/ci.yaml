@@ -60,4 +60,39 @@ jobs:
             sleep 10
             docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
           done
+        curl localhost:8080            
+  kubernetes: 
+    env:
+      mode: kubernetes
+    runs-on: ubuntu-18.04
+    steps:
+    - 
+      name: checkout
+      uses: actions/checkout@v2
+    -
+      name: test
+      run: |
+        set -x
+        branch=$(basename $GITHUB_REF)
+        project=$(basename $GITHUB_REPOSITORY)
+        compose=etc/$mode/$project.yaml
+        sed -i /image:.*$project/s/latest/$branch/ $compose
+        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
+        find
+        docker swarm init
+        sed -i s/worker/manager/ $compose
+        docker stack deploy -c $compose $project
+        while true
+          do
+            sleep 10
+            docker service ls
+            docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
+          done
+        docker stats --no-stream
+        while true
+          do
+            sleep 10
+            docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
+          done
         curl localhost:8080
+            
