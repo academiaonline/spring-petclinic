@@ -8,13 +8,13 @@ networks:
 services:
   spring-petclinic:
     deploy:
-     resources:
-      limits:
-       cpus: "0.3"
-       memory: 900M
       placement:
         constraints:
         - node.role == worker
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 900M
     image: academiaonline/spring-petclinic:latest
     networks:
     - frontend
