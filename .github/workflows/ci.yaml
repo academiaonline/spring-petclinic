@@ -14,9 +14,14 @@ jobs:
       name: test
       run: |
         set -x
-        find
-        docker build -t test --no-cache .
-        docker run -d -p 8080:8080 --name test --cpus "0.3" -m 900M --memory-reservation 900M test 
+
+        branch=$(basename $GITHUB_REF)
+        project=$(basename $GITHUB_REPOSITORY)
+        
+        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
+
+        docker run -d -p 8080:8080 --name test --cpus "0.3" -m 900M --memory-reservation 900M $GITHUB_REPOSITORY:$branch 
+        
         while true
           do
             sleep 10
@@ -39,14 +44,19 @@ jobs:
       name: test
       run: |
         set -x
+
         branch=$(basename $GITHUB_REF)
         project=$(basename $GITHUB_REPOSITORY)
+        
         compose=etc/$mode/$project.yaml
         sed -i /image:.*$project/s/latest/$branch/ $compose
+        
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
+        
         docker swarm init
         sed -i s/worker/manager/ $compose
         docker stack deploy -c $compose $project
+        
         while true
           do
             sleep 10
@@ -57,6 +67,7 @@ jobs:
             sleep 10
             docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
           done
+          
   kubernetes: 
     env:
       mode: kubernetes
@@ -69,10 +80,13 @@ jobs:
       name: test
       run: |
         set -x
+        
         branch=$(basename $GITHUB_REF)
         project=$(basename $GITHUB_REPOSITORY)
+        
         compose=etc/$mode/$project.yaml
         sed -i /image:.*$project/s/latest/$branch/ $compose
+        
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
 
         version="1.18.10-00"
