@@ -109,3 +109,10 @@ jobs:
 
         sed -i /imagePullPolicy/s/Always/Never/ $compose
         kubectl apply -f $compose
+        
+        while true
+          do
+            sleep 10
+            kubectl get deploy
+            kubectl get deploy | grep '\([0-9]\)/\1' && break
+          done
