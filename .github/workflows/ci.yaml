@@ -2,32 +2,32 @@
 #      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
 #      SPDX-License-Identifier:  GPL-2.0-only                                  #
 ################################################################################
-name: CI
-on: 
-  push:
-    branches: 
-    - docker
-jobs: 
-  docker: 
-    runs-on: ubuntu-18.04
-    steps: 
-    - 
-      name: checkout
-      uses: actions/checkout@v2
-    -
-      name: test
-      run: |
-        set -x
-
-        branch=$(basename $GITHUB_REF)
-        project=$(basename $GITHUB_REPOSITORY)
-        
-        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .
-
+name: CI                                                                       #
+on:                                                                            #
+  push:                                                                        #
+    branches:                                                                  #
+    - docker                                                                   #
+jobs:                                                                          #
+  docker:                                                                      #
+    runs-on: ubuntu-18.04                                                      #
+    steps:                                                                     #
+    -                                                                          #
+      name: checkout                                                           #
+      uses: actions/checkout@v2                                                #
+    -                                                                          #
+      name: test                                                               #
+      run: |                                                                   #
+        set -x                                                                 #
+                                                                               #
+        branch=$(basename $GITHUB_REF)                                         #
+        project=$(basename $GITHUB_REPOSITORY)                                 #
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                #
+                                                                               #
         docker run -d -p 8080:8080 --name test --cpus "0.3" -m 900M --memory-reservation 900M $GITHUB_REPOSITORY:$branch 
-        
-        while true
-          do
+                                                                               #
+        while true                                                             
+          do                                                                   
             sleep 10
             docker exec test ps | grep "1.*java -jar spring-petclinic.jar" && break
           done
@@ -72,9 +72,7 @@ jobs:
             sleep 10
             docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
           done
-          
-        curl localhost:80 -I
-        
+                 
   kubernetes: 
     env:
       mode: kubernetes
@@ -133,5 +131,4 @@ jobs:
             kubectl logs deploy/$project | grep "Started PetClinicApplication" && break
           done
           
-        curl localhost:30000 -I
-        curl localhost:8080 -I
+        curl localhost:30000
