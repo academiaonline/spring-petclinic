@@ -24,17 +24,26 @@ jobs:                                                                          #
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
                                                                                #
-        docker run -d -p 8080:8080 --name test --cpus "0.5" -m 1G --memory-reservation 1G $GITHUB_REPOSITORY:$branch 
+        docker run -d -p 8080:8080 --cpus "0.5" -m 1G --memory-reservation 1G  \
+           --name test $GITHUB_REPOSITORY:$branch                              ;
                                                                                #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker exec test ps | grep "1.*java -jar spring-petclinic.jar" && break
+            docker exec test ps                                                \
+            |                                                                  \
+            grep "1.*java -jar spring-petclinic.jar"                           \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            curl localhost:8080 | grep "PetClinic :: a Spring Framework demonstration" && break
+            curl localhost:8080                                                \
+            |                                                                  \
+            grep "PetClinic :: a Spring Framework demonstration"               \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
                                                                                #
   swarm:                                                                       #
@@ -65,12 +74,20 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker service ls | grep "$project.*replicated.*\([0-9]\)/\1.*8080" && break
+            docker service ls                                                  \
+            |                                                                  \
+            grep "$project.*replicated.*\([0-9]\)/\1.*8080"                    \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
+            docker service logs ${project}_${project} --tail 1                 \
+            |                                                                  \
+            grep "Started PetClinicApplication"                                \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
                                                                                #
   kubernetes:                                                                  #
@@ -95,19 +112,26 @@ jobs:                                                                          #
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
                                                                                #
         version="1.18.10-00"                                                   ;
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-        echo deb http://apt.kubernetes.io/ kubernetes-xenial main | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg          \
+        |                                                                      \
+        sudo apt-key add -                                                     ;
+        echo deb http://apt.kubernetes.io/ kubernetes-xenial main              \
+        |                                                                      \
+        sudo tee -a /etc/apt/sources.list.d/kubernetes.list                    ;
         sudo apt-get update                                                    ;
-        sudo apt-get install -y kubelet=$version kubeadm=$version kubectl=$version --allow-downgrades
+        sudo apt-get install -y --allow-downgrades                             \
+          kubelet=$version kubeadm=$version kubectl=$version                   ;
         ip=$( ip r | grep default | awk '{ print $9 }' )                       ;
         sudo swapoff -a                                                        ;
-        sudo kubeadm init --apiserver-advertise-address $ip --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=all
+        sudo kubeadm init --apiserver-advertise-address $ip                    \
+          --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=all      ;
                                                                                #
         mkdir -p $HOME/.kube                                                   ;
         sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config                  ;
         sudo chown $(id -u):$(id -g) $HOME/.kube/config                        ;
         echo "source <(kubectl completion bash)" >> ~/.bashrc                  ;
-        kubectl apply -f https://docs.projectcalico.org/v3.16/manifests/calico.yaml          
+        kubectl apply -f                                                       \
+          https://docs.projectcalico.org/v3.16/manifests/calico.yaml           ;
         master=$( kubectl get node | grep master | awk '{ print $1 }' )        ;
                                                                                #
         kubectl taint node $master node-role.kubernetes.io/master:NoSchedule-  ;
@@ -128,7 +152,11 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            kubectl logs deploy/$project | grep "Started PetClinicApplication" && break
+            kubectl logs deploy/$project                                       \
+            |                                                                  \
+            grep "Started PetClinicApplication"                                \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
                                                                                #
             curl localhost:30000 | grep "PetClinic :: a Spring Framework demonstration"
@@ -155,8 +183,8 @@ jobs:                                                                          #
         docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
                                                                                #
         curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-        sudo dpkg -i minikube_latest_amd64.deb
-        minikube start 
+        sudo dpkg -i minikube_latest_amd64.deb                                 ;
+        minikube start                                                         ;
                                                                                #
         sed -i /imagePullPolicy/s/Always/Never/ $compose                       ;
         minikube kubectl -- apply -f $compose                                  ;
@@ -164,17 +192,29 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            minikube kubectl -- get deploy | grep "$project.*\([0-9]\)/\1" && break
+            minikube kubectl -- get deploy                                     \
+            |                                                                  \
+            grep "$project.*\([0-9]\)/\1"                                      \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            minikube kubectl -- get svc | grep "$project.*NodePort.*80:30000/TCP" && break
+            minikube kubectl -- get svc                                        \
+            |                                                                  \
+            grep "$project.*NodePort.*80:30000/TCP"                            \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            minikube kubectl -- logs deploy/$project | grep "Started PetClinicApplication" && break
+            minikube kubectl -- logs deploy/$project                           \
+            |                                                                  \
+            grep "Started PetClinicApplication"                                \
+            &&                                                                 \
+            break                                                              ;
           done                                                                 ;
                                                                                #
             curl localhost:30000 | grep "PetClinic :: a Spring Framework demonstration"
