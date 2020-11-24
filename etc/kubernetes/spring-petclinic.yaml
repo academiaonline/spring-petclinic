@@ -18,7 +18,7 @@ spec:
     spec:
       containers: 
       -
-        image: academiaonline/spring-petclinic:latest
+        image: academiaonline/spring-petclinic:1.0
         imagePullPolicy: Always
         name: spring-petclinic
         ports:
