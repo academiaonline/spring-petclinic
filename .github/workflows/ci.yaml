@@ -158,64 +158,14 @@ jobs:                                                                          #
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
-                                                                               #
-            curl localhost:30000 | grep "PetClinic :: a Spring Framework demonstration"
-                                                                               #
-  minikube:                                                                    #
-    env:                                                                       #
-      mode: minikube                                                           #
-    runs-on: ubuntu-18.04                                                      #
-    steps:                                                                     #
-    -                                                                          #
-      name: checkout                                                           #
-      uses: actions/checkout@v2                                                #
-    -                                                                          #
-      name: test                                                               #
-      run: |                                                                   #
-        set -x                                                                 ;
-                                                                               #
-        branch=$(basename $GITHUB_REF)                                         ;
-        project=$(basename $GITHUB_REPOSITORY)                                 ;
-                                                                               #
-        compose=etc/$mode/$project.yaml                                        ;
-        sed -i /image:.*$project/s/latest/$branch/ $compose                    ;
-                                                                               #
-        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
-                                                                               #
-        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-        sudo dpkg -i minikube_latest_amd64.deb                                 ;
-        minikube start                                                         ;
-                                                                               #
-        sed -i /imagePullPolicy/s/Always/Never/ $compose                       ;
-        minikube kubectl -- apply -f $compose                                  ;
-                                                                               #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            minikube kubectl -- get deploy                                     \
+            curl localhost:8080                                                \
             |                                                                  \
-            grep "$project.*\([0-9]\)/\1"                                      \
-            &&                                                                 \
-            break                                                              ;
-          done                                                                 ;
-        while true                                                             ;
-          do                                                                   \
-            sleep 10                                                           ;
-            minikube kubectl -- get svc                                        \
-            |                                                                  \
-            grep "$project.*NodePort.*80:30000/TCP"                            \
-            &&                                                                 \
-            break                                                              ;
-          done                                                                 ;
-        while true                                                             ;
-          do                                                                   \
-            sleep 10                                                           ;
-            minikube kubectl -- logs deploy/$project                           \
-            |                                                                  \
-            grep "Started PetClinicApplication"                                \
+            grep "PetClinic :: a Spring Framework demonstration"               \
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
                                                                                #
-            curl localhost:30000 | grep "PetClinic :: a Spring Framework demonstration"
-                                                                               #
+                                                                               curl localhost:30000
