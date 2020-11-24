@@ -1,3 +1,7 @@
+################################################################################
+#      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
+#      SPDX-License-Identifier:  GPL-2.0-only                                  #
+################################################################################
 name: CI
 on: 
   push:
@@ -69,7 +73,6 @@ jobs:
             docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
           done
           
-        curl localhost:8080 -I
         curl localhost:80 -I
         
   kubernetes: 
@@ -130,6 +133,5 @@ jobs:
             kubectl logs deploy/$project | grep "Started PetClinicApplication" && break
           done
           
-        curl localhost:80 -I
-        curl localhost:8080 -I
         curl localhost:30000 -I
+        curl localhost:8080 -I
