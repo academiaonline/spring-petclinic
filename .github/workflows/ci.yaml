@@ -161,11 +161,10 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            curl localhost:8080                                                \
+            curl localhost:30000                                               \
             |                                                                  \
             grep "PetClinic :: a Spring Framework demonstration"               \
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
                                                                                #
-                                                                               curl localhost:30000
