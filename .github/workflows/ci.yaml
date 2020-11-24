@@ -69,6 +69,9 @@ jobs:
             docker service logs ${project}_${project} --tail 1 | grep "Started PetClinicApplication" && break
           done
           
+        curl localhost:8080 -I
+        curl localhost:80 -I
+        
   kubernetes: 
     env:
       mode: kubernetes
@@ -126,3 +129,7 @@ jobs:
             sleep 10
             kubectl logs deploy/$project | grep "Started PetClinicApplication" && break
           done
+          
+        curl localhost:80 -I
+        curl localhost:8080 -I
+        curl localhost:30000 -I
