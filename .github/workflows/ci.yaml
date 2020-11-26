@@ -22,10 +22,12 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
+        release=latest                                                         ;
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
         docker run -d -p 8080:8080 --cpus "0.5" -m 1G --memory-reservation 1G  \
-           --name test $GITHUB_REPOSITORY:$branch                              ;
+           --name test $GITHUB_REPOSITORY:$release-testing                     ;
                                                                                #
         while true                                                             ;
           do                                                                   \
@@ -62,10 +64,12 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        compose=etc/$mode/$project.yaml                                        ;
-        sed -i /image:.*$project/s/latest/$branch/ $compose                    ;
+        release=latest                                                         ;
                                                                                #
-        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
+        compose=etc/$mode/$project.yaml                                        ;
+        sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
         docker swarm init                                                      ;
         sed -i s/worker/manager/ $compose                                      ;
@@ -106,10 +110,12 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        compose=etc/$mode/$project.yaml                                        ;
-        sed -i /image:.*$project/s/latest/$branch/ $compose                    ;
+        release=latest                                                         ;
                                                                                #
-        docker build -t $GITHUB_REPOSITORY:$branch --no-cache .                ;
+        compose=etc/$mode/$project.yaml                                        ;
+        sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
+                                                                               #
+        docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
         version="1.18.10-00"                                                   ;
         curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg          \
