@@ -15,7 +15,7 @@ services:
         limits:
           cpus: "0.5"
           memory: 1g
-    image: academiaonline/spring-petclinic:latest
+    image: academiaonline/spring-petclinic:1.1
     networks:
     - frontend
     ports:
