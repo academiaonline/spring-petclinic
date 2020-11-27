@@ -93,7 +93,6 @@ jobs:                                                                          #
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
-        wget localhost:30000
                                                                                #
   kubernetes:                                                                  #
     env:                                                                       #
