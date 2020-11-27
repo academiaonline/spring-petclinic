@@ -6,7 +6,7 @@ name: CI                                                                       #
 on:                                                                            #
   push:                                                                        #
     branches:                                                                  #
-    - docker                                                                   #
+    - v1.1                                                                     #
 jobs:                                                                          #
   docker:                                                                      #
     runs-on: ubuntu-18.04                                                      #
@@ -22,7 +22,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        release=1.1                                                            ;
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
@@ -64,7 +64,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        release=1.1                                                            ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
@@ -110,7 +110,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        release=1.1                                                            ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
