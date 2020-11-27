@@ -72,7 +72,7 @@ jobs:                                                                          #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
         docker swarm init                                                      ;
-        sed -i s/worker/manager/ $compose                                      ;
+        sed -i /node.role/s/worker/manager/ $compose                           ;
         docker stack deploy -c $compose $project                               ;
                                                                                #
         while true                                                             ;
