@@ -22,7 +22,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
@@ -64,7 +64,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
@@ -93,6 +93,8 @@ jobs:                                                                          #
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
+        curl localhost:30000 -I
+        curl localhost:30000
                                                                                #
   kubernetes:                                                                  #
     env:                                                                       #
@@ -110,7 +112,7 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        release=latest                                                         ;
+        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
