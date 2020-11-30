@@ -11,8 +11,12 @@ services:
       placement:
         constraints:
         - node.role == worker
+      replicas: 1
       resources:
         limits:
+          cpus: "0.5"
+          memory: 1g
+        reservations:
           cpus: "0.5"
           memory: 1g
     image: academiaonline/spring-petclinic:latest
@@ -20,5 +24,4 @@ services:
     - frontend
     ports:
     - 30000:8080
-    replicas: 1
 version: '3.8'
