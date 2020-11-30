@@ -20,4 +20,5 @@ services:
     - frontend
     ports:
     - 30000:8080
+    replicas: 1
 version: '3.8'
