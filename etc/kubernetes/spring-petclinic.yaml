@@ -8,6 +8,7 @@ kind: Deployment
 metadata: 
   name: spring-petclinic
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: spring-petclinic
@@ -24,6 +25,7 @@ spec:
         ports:
         -
           containerPort: 8080
+          protocol: TCP
         resources:
           limits:
             cpu: 500m
@@ -42,6 +44,7 @@ spec:
     ports:
     -
       port: 8080
+      protocol: TCP
   podSelector:
     matchLabels:
       app: spring-petclinic
@@ -55,6 +58,7 @@ spec:
   -
     nodePort: 30000
     port: 80
+    protocol: TCP
     targetPort: 8080
   selector:
     app: spring-petclinic
