@@ -18,11 +18,13 @@ spec:
         app: spring-petclinic
     spec:
       containers: 
-      - name: spring-petclinic
+      -
         image: academiaonline/spring-petclinic:latest
         imagePullPolicy: Always
+        name: spring-petclinic
         ports:
-        - containerPort: 8080
+        -
+          containerPort: 8080
           protocol: TCP
         resources:
           limits:
@@ -38,8 +40,10 @@ metadata:
   name: spring-petclinic
 spec:
   ingress:
-  - ports:
-    - port: 8080
+  -
+    ports:
+    -
+      port: 8080
       protocol: TCP
   podSelector:
     matchLabels:
@@ -51,10 +55,11 @@ metadata:
   name: spring-petclinic
 spec:
   ports:
-  - port: 80
+  -
+    nodePort: 30000
+    port: 80
     protocol: TCP
     targetPort: 8080
-    nodePort: 30000
   selector:
     app: spring-petclinic
   type: NodePort
