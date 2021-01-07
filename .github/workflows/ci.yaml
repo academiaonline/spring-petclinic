@@ -173,6 +173,7 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
+            kubectl exec deploy/$project -- curl localhost:8080                
             kubectl exec deploy/$project -- curl localhost:8080                \
             |                                                                  \
             grep "PetClinic :: a Spring Framework demonstration"               \
