@@ -22,7 +22,9 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
+        echo $branch | grep ^v[0-9]                                            \
+          && release=$( echo $branch | sed 's/^v\([0-9]\)/\1/' )               \
+          || release=latest                                                    ;
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
@@ -64,7 +66,9 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
+        echo $branch | grep ^v[0-9]                                            \
+          && release=$( echo $branch | sed 's/^v\([0-9]\)/\1/' )               \
+          || release=latest                                                    ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
@@ -110,7 +114,9 @@ jobs:                                                                          #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
                                                                                #
-        echo $branch | grep ^v[0-9] && release=$branch || release=latest       ;
+        echo $branch | grep ^v[0-9]                                            \
+          && release=$( echo $branch | sed 's/^v\([0-9]\)/\1/' )               \
+          || release=latest                                                    ;
                                                                                #
         compose=etc/$mode/$project.yaml                                        ;
         sed -i /image:.*$project/s/$release/$release-testing/ $compose         ;
@@ -153,7 +159,7 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            kubectl get svc | grep "$project.*NodePort.*80:30000/TCP" && break ;
+            kubectl get svc | grep "$project.*ClusterIP.*8080/TCP" && break    ;
           done                                                                 ;
         while true                                                             ;
           do                                                                   \
@@ -167,7 +173,7 @@ jobs:                                                                          #
         while true                                                             ;
           do                                                                   \
             sleep 10                                                           ;
-            curl localhost:30000                                               \
+            kubectl exec deploy/$project -- curl localhost:8080                \
             |                                                                  \
             grep "PetClinic :: a Spring Framework demonstration"               \
             &&                                                                 \
