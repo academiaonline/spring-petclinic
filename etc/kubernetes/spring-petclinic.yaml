@@ -19,7 +19,7 @@ spec:
     spec:
       containers: 
       - name: spring-petclinic
-        image: academiaonline/spring-petclinic:latest
+        image: academiaonline/spring-petclinic:2.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
