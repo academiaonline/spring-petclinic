@@ -2,14 +2,20 @@
 #      Copyright (C) 2020        Sebastian Francisco Colomar Bauza             #
 #      SPDX-License-Identifier:  GPL-2.0-only                                  #
 ################################################################################
+ARG                                                                            \
+  digest="@sha256:7445f83cd169b9f0b185e443e755ece1e37d3cf1e2e90f9180afad2fdb9d2bc4"
+ARG                                                                            \
+  image="maven"
+ARG                                                                            \
+  tag="3.6.1-jdk-8-alpine"
+################################################################################
 FROM                                                                           \
-  maven:alpine                                                                 \
+  ${image}:${tag}${digest}                                                     \
   AS                                                                           \
   build
+################################################################################
 ARG                                                                            \
-  dir=/dir
-ARG                                                                            \
-  project=spring-petclinic
+  dir=/build
 WORKDIR                                                                        \
   $dir
 COPY                                                                           \
@@ -18,25 +24,33 @@ COPY                                                                           \
 RUN                                                                            \
   mvn install                                                                  \
   &&                                                                           \
-  mv target/$project-*.jar $project.jar                                        \
+  mv target/*.jar java.jar                                                     \
                                                                                ;
 ################################################################################
+ARG                                                                            \
+  digest="@sha256:4da3b2460418a3d7bd9b4b6ee51951d5a6fdede28298c0a0106aa69dbac3937e"
+ARG                                                                            \
+  image="openjdk"
+ARG                                                                            \
+  tag="jre-alpine3.8"
+################################################################################
 FROM                                                                           \
-  openjdk:jre-alpine                                                           \
+  ${image}:${tag}${digest}                                                     \
   AS                                                                           \
   production
+################################################################################
 ARG                                                                            \
-  dir=/dir
+  build_dir=/build
 ARG                                                                            \
-  project=spring-petclinic
+  dir=/app
 WORKDIR                                                                        \
   $dir
 COPY                                                                           \
   --from=build                                                                 \
-  $dir/$project.jar                                                            \
+  $build_dir/java.jar                                                          \
   .
 ENTRYPOINT                                                                     \
   ["java","-jar"]
 CMD                                                                            \
-  ["spring-petclinic.jar"]
+  ["java.jar"]
 ################################################################################
