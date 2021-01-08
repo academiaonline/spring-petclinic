@@ -11,7 +11,7 @@ ARG                                                                            \
 ################################################################################
 FROM                                                                           \
   #${image}:${tag}@sha256:${digest}                                             \
-  ${image}@sha256:${digest}                                             \
+  ${image}:${tag}                                                              \
   #maven:3.6.1-jdk-8-alpine@sha256:7445f83cd169b9f0b185e443e755ece1e37d3cf1e2e90f9180afad2fdb9d2bc4 \
   #maven:3.6.1-jdk-8-alpine \
   AS                                                                           \
