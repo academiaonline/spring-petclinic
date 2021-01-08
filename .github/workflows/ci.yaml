@@ -18,6 +18,7 @@ jobs:                                                                          #
       name: test                                                               #
       run: |                                                                   #
         set -x                                                                 ;
+        lscpu
                                                                                #
         branch=$(basename $GITHUB_REF)                                         ;
         project=$(basename $GITHUB_REPOSITORY)                                 ;
