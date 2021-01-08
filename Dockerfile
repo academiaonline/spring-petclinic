@@ -31,11 +31,11 @@ RUN                                                                            \
                                                                                ;
 ################################################################################
 ARG                                                                            \
-  digest="@sha256:4da3b2460418a3d7bd9b4b6ee51951d5a6fdede28298c0a0106aa69dbac3937e"
+  digest=@sha256:4da3b2460418a3d7bd9b4b6ee51951d5a6fdede28298c0a0106aa69dbac3937e
 ARG                                                                            \
-  image="openjdk"
+  image=openjdk
 ARG                                                                            \
-  tag="jre-alpine3.8"
+  tag=jre-alpine3.8
 ################################################################################
 FROM                                                                           \
   ${image}:${tag}${digest}                                                     \
