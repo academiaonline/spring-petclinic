@@ -36,7 +36,7 @@ jobs:                                                                          #
             sleep 10                                                           ;
             docker exec test ps                                                \
             |                                                                  \
-            grep "1.*java -jar spring-petclinic.jar"                           \
+            grep "1.*java -jar java.jar"                                       \
             &&                                                                 \
             break                                                              ;
           done                                                                 ;
