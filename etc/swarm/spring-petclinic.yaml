@@ -20,9 +20,9 @@ services:
         reservations:
           cpus: "0.5"
           memory: 1g
-    image: academiaonline/spring-petclinic:latest
+    image: academiaonline/spring-petclinic:2.1
     networks:
     - frontend
     ports:
-    - 30000:8080
+    - 80:8080
 version: '3.8'
