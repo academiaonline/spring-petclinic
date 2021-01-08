@@ -7,7 +7,7 @@ ARG                                                                            \
 ARG                                                                            \
   image="maven"
 ARG                                                                            \
-  tag="3.6.1-jdk-8-alpine"
+  tag="alpine"
 ################################################################################
 FROM                                                                           \
   ${image}:${tag}${digest}                                                     \
