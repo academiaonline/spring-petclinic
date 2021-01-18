@@ -123,11 +123,15 @@ jobs:                                                                          #
                                                                                #
         docker build -t $GITHUB_REPOSITORY:$release-testing --no-cache .       ;
                                                                                #
-        uuid=$( md5sum $compose | cut -d" " -f1 )                              ;
-        git clone --single-branch -b v1.0                                      \
+        uuid=$( md5sum $compose | cut -d\  -f1 )                               ;
+        git clone --single-branch -b v1.2                                      \
           https://github.com/academiaonline/kubernetes $uuid                   ;
-        path=$uuid/bin/standalone/ubuntu18/install.sh                          ;
+        path=$uuid/bin/cluster/ubuntu18/install-docker-kubelet.sh              ;
         source $path                                                           ;
+        path=$uuid/bin/cluster/ubuntu18/install-leader.sh                      ;
+        source $path                                                           ;
+        master=$( kubectl get node | grep master | awk '{ print $1 }' )        ;
+        kubectl taint node $master node-role.kubernetes.io/master:NoSchedule-  ;
         rm -rf $uuid                                                           ;
                                                                                #
         sed -i /imagePullPolicy/s/Always/Never/ $compose                       ;
